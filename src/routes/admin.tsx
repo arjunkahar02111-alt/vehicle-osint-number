@@ -322,6 +322,11 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
               <div>
                 <div className="font-semibold">Temporary storage mode active</div>
                 <div className="mt-0.5 text-amber-100/80">{state.health.message}</div>
+                {state.health.lastError && (
+                  <div className="mt-2 rounded-md border border-amber-300/20 bg-black/25 px-2 py-1 font-mono text-[11px] text-amber-50/80">
+                    {state.health.lastError}
+                  </div>
+                )}
               </div>
             </div>
           </div>
