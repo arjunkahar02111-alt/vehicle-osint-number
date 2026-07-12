@@ -1,0 +1,11 @@
+GRANT USAGE ON SCHEMA public TO service_role, anon, authenticated;
+GRANT ALL ON public.admin_settings TO service_role;
+GRANT ALL ON public.blocked_ips TO service_role;
+GRANT ALL ON public.lookup_logs TO service_role;
+GRANT ALL ON public.admin_settings TO postgres;
+GRANT ALL ON public.blocked_ips TO postgres;
+GRANT ALL ON public.lookup_logs TO postgres;
+ALTER TABLE public.admin_settings OWNER TO postgres;
+ALTER TABLE public.blocked_ips OWNER TO postgres;
+ALTER TABLE public.lookup_logs OWNER TO postgres;
+NOTIFY pgrst, 'reload schema';
