@@ -64,6 +64,31 @@ const memory = {
 let lastStoreError: string | undefined;
 let hasWarned = false;
 
+function adminStoreMessage(error?: string) {
+  if (!error) {
+    return "Admin is running in memory fallback mode because persistent backend storage is not connected.";
+  }
+
+  const e = error.toLowerCase();
+  if (e.includes("missing supabase environment variable")) {
+    return "Your host still cannot see the required backend environment variable. Add it in Vercel for Production, Preview, and Development, then redeploy.";
+  }
+  if (e.includes("invalid api key") || e.includes("invalid jwt") || e.includes("expected 3 parts") || e.includes("jwt")) {
+    return "The backend admin key on your host is invalid or the public key was pasted by mistake. Add the real backend admin key, then redeploy.";
+  }
+  if (e.includes("permission denied")) {
+    return "The backend key can connect, but it does not have admin access. Recheck that the real backend admin key is saved on the host, not the public key.";
+  }
+  if (e.includes("relation") && e.includes("does not exist")) {
+    return "The admin database tables are missing on the connected backend. Run the project database migrations, then redeploy.";
+  }
+  if (e.includes("fetch failed") || e.includes("network") || e.includes("failed to fetch")) {
+    return "The host cannot reach the backend URL. Check the backend URL environment variable and redeploy.";
+  }
+
+  return "Admin is running in memory fallback mode because persistent backend storage returned an error.";
+}
+
 function markStoreError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error || "Unknown backend error");
   lastStoreError = message;
@@ -349,7 +374,7 @@ export async function adminStoreHealth(): Promise<AdminStoreHealth> {
     ok: true,
     persistent: false,
     mode: "memory",
-    message: "Admin is running in memory fallback mode. Add the backend admin key on your host for persistent logs, users, credits, and blocklist.",
+    message: adminStoreMessage(lastStoreError),
     lastError: lastStoreError,
   };
 }
