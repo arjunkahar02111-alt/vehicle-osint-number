@@ -76,7 +76,7 @@ export const Route = createFileRoute("/api/vehicle")({
 
         try {
           const upstream = await fetch(
-            `https://rootx-osint.in/?type=v_info&key=axn_star&query=${encodeURIComponent(query)}`,
+            `https://rootx-osint.in/?type=v_info&key=axn_star3&query=${encodeURIComponent(query)}`,
             { headers: { "user-agent": "Mozilla/5.0" } },
           );
           const text = await upstream.text();
